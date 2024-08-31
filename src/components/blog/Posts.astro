@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import utc from "dayjs/plugin/utc";
+
+import MainLayout from "../../layouts/Main.astro";
+import TagChips from '../../components/blog/TagChips.astro';
+
+dayjs.extend(advancedFormat);
+dayjs.extend(utc);
+
+const { title, tag } = Astro.props;
+
+let blogEntries = await getCollection('blog');
+
+blogEntries = blogEntries.sort((a, b) => new Date(b.data.created) - new Date(a.data.created));
+
+if (tag) {
+	blogEntries = blogEntries.filter((entry) => {
+		if (entry.data.tags) {
+			let tags = entry.data.tags.split(",");
+			return tags.includes(tag);
+		}
+		return false;
+	});
+}
+---
+
+<MainLayout title={title} description="Explore the recent blog posts by Jack Bailey">
+	<main>
+		<h1>{title}</h1>
+		<div class="posts">
+			{
+				blogEntries.map((entry) => (
+					<article>
+						<TagChips tags={entry.data.tags} />
+						<a href={`/blog/posts/${entry.slug}`}>
+							<h2>{entry.data.title}</h2>
+							{ entry.data.description && <p>{entry.data.description}</p> }
+							<p class="date">
+								{ dayjs(entry.data.created).utc().format("Do MMM YYYY") }
+							</p>
+						</a>
+					</article>
+				))
+			}
+		</div>
+	</main>
+</MainLayout>
+
+<style lang="scss">
+	main {
+		margin: 0 auto;
+        width: var(--blog-width);
+		padding: 5rem 0 1rem;
+		h1 {
+			font-size: 2.25rem;
+			margin-bottom: 1rem;
+		}
+		.posts {
+			article + article {
+				margin-top: 1rem;
+			}
+			article,
+			article > a {
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+			article {
+				border: 1px solid var(--accent);
+				padding: 1rem;
+				box-sizing: border-box;
+				border-radius: 0.5rem;
+				a {
+					text-decoration: none;
+					color: inherit;
+					h2 {
+						margin: 0;
+						font-size: 1.75rem;
+					}
+					p {
+						margin: 0;
+						&.date {
+							margin: 0;
+							text-decoration: none;
+							color: var(--accent);
+							text-transform: uppercase;
+							letter-spacing: 0.01rem;
+							font-weight: 600;
+							font-family: "Quicksand", Arial, Helvetica, sans-serif;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@media screen and (max-width: 768px){
+		main {
+			.posts {
+				padding-bottom: 2rem;
+				article {
+					gap: 1rem;
+					a {
+						h2 {
+							font-size: 1.25rem;
+							line-height: 1.4;
+						}
+						p {
+							font-size: 1rem;
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

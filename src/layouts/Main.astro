@@ -1,0 +1,40 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+import { useTurnstile } from "../_utils";
+
+const { title, description, metaImage, footerBackground, noindex } = Astro.props;
+
+let pathname = new URL(Astro.request.url).pathname;
+if (pathname.startsWith("/")) {
+    pathname = pathname.slice(1);
+}
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title ? `${title} | Jack Bailey` : "Jack Bailey"}</title>
+    <meta content={title ? `${title} | Jack Bailey` : "Jack Bailey"} property="og:title" />
+    <script defer src="https://analytics.jackbailey.dev/script.js" data-website-id="ba3c9c82-e20b-4dee-b970-8dba13e2f4e1" data-domains="jackbailey.dev"></script>
+    { useTurnstile && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> }
+
+    { description && <meta content={description} name="description" /> }
+    { description && <meta content={description} property="og:description" /> }
+
+    <meta content={Astro.site + pathname} property="og:url" />
+    { metaImage && <meta content={Astro.site + metaImage} property="og:image" /> }
+    { metaImage && <meta name="twitter:card" content="summary_large_image"/> }
+    
+    <meta content="#5b42f5" name="theme-color" />
+
+    { noindex && <meta name="robots" content="noindex"/> }
+</head>
+<body>
+    <Header/>
+    <slot />
+    <Footer background={footerBackground} />
+</body>
+</html>

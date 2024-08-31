@@ -1,0 +1,104 @@
+---
+import GitHubLogo from "../assets/icons/github.svg?raw";
+import DiscordLogo from "../assets/icons/discord.svg?raw";
+
+const { background } = Astro.props;
+---
+
+<footer data-background={background}>
+    <div class="footer-inner">
+        <ul>
+            <li>
+                <a href="/privacy">Privacy Policy</a>
+            </li>
+            <li>
+                <a href="/gear">What I use</a>
+            </li>
+        </ul>
+        <p></p>
+        <div class="socials">
+            <a href="https://github.com/JackBailey/Portfolio" target="_blank" rel="noopener noreferrer" aria-label="Jack Bailey's GitHub Account">
+                <Fragment set:html={GitHubLogo}>
+            </a>
+            <a href="/discord" aria-label="View Jack Bailey's GitHub username">
+                <Fragment set:html={DiscordLogo}>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<style lang="scss">
+    footer {
+        .footer-inner {
+            width: var(--section-width);
+            margin: 0 auto;
+            padding: 1rem 0;
+            box-sizing: border-box;
+            text-align: center;
+            ul {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                list-style-type: none;
+                padding: 0;
+                li {
+                    a {
+                        color: var(--foreground-1);
+                        font-weight: 600;
+                        color: var(--foreground-1);
+                        transition: 150ms ease-in-out;
+                        margin: 0;
+                        &:hover {
+                            color: var(--accent);
+                        }
+                    }
+                }
+            }
+            .socials {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 1rem;
+                a {
+                    cursor: pointer;
+                    text-decoration: none;
+                    :global(svg) {
+                        width: 2rem;
+                        height: 2rem;
+                    }
+                    
+                    :global(svg path)  {
+                        fill: var(--foreground-1);;
+                        transition: 150ms ease-in-out;
+                    }
+
+                    &:hover {
+                        :global(svg path) {
+                            fill: var(--accent);
+                        }
+                    }
+                }
+            }
+        }
+        
+        &[data-background="true"] {
+            background-color: #1f195a;
+            .footer-inner {
+                p,
+                ul li {
+                    color: var(--accent-foreground);
+                    a {
+                        color: var(--accent-foreground);
+                    }
+                }
+                .socials {
+                    a {
+                        :global(svg path)  {
+                            fill: var(--accent-foreground);
+                        }
+                    }
+                }
+            }
+        }
+	}
+</style>
